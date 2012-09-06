@@ -1,0 +1,52 @@
+@(infos: List[pl.edu.pw.elka.stud.tkogut.passim.executors.PersonInfo])
+
+    <style>
+        p {
+            margin-top: 0;
+            margin-bottom: 0px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+    </style>
+
+@main("Person search results") {
+    <h1>People of science (@infos.length)</h1>
+    @for(p <- infos) {
+        <hr />
+        <h2>@p.name</h2>
+        @if(p.pictureURL!=null) {
+            <img src="@p.pictureURL" height="85" alt="Person picture" />
+        }
+        @if(p.email!=null) {
+            <p>E-mail: @p.email</p><br />
+        }
+        @if(p.phoneNumber!=null) {
+            <p>Phone number: @p.phoneNumber</p>
+        }
+
+        @if(p.publications.nonEmpty) {
+            <p>List of publications:</p>
+            @for(pub <- p.publications.toList.sortBy(_.pubYear)) {
+                <p><i>"@pub.title"</i> @if(pub.pubYear!="Unknown") {from year @pub.pubYear} by @pub.authors</p>
+            }
+        }
+
+        @if(p.citationNumber!=null) {
+            <br/>
+            <p>Citation number: @p.citationNumber</p>
+        }
+
+
+        @if(p.hindex!=null) {
+            <br/>
+            <p>H-Index: @p.hindex</p>
+        }
+
+        <br/>
+        <p>Information source: @p.infoSource.mkString(",") </p>
+    }
+    <br/>
+}

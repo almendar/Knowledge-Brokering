@@ -1,0 +1,25 @@
+@(searchForm: Form[(String,String)])
+
+@import helper._
+@import pl.edu.pw.elka.stud.tkogut.passim.PassimDialect
+
+@main("Passim search") {
+
+<h1 style="margin-left: auto; margin-right: auto;">Passim search</h1>
+
+<h2>Make a search</h2>
+@form(routes.Application.newSearch) {
+    @inputText(searchForm("searchQuery"), args = '_label -> "Type in query")
+    @select(
+        field = searchForm("type"),
+        options = options(
+            "Person" -> "Person",
+            "Publication"-> "Publication",
+            "University"-> "University"
+        ),
+        args = '_label -> "Search type"
+)
+    <input type="submit" value="Search...">
+}
+
+}

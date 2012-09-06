@@ -1,0 +1,15 @@
+@(infos: List[pl.edu.pw.elka.stud.tkogut.passim.executors.UniversityData])
+
+@main("University search results"){
+        <h1>Found universities (@infos.length)</h1>
+        <ul>
+            @for(i<-infos) {
+            <li>@i.name
+                @if(i.yearEstablished.nonEmpty) {established in @i.yearEstablished} <br>
+                @i.city, @i.country<br/>
+                <a href="@i.homepage">@i.homepage</a>
+            </li>
+            }
+
+        </ul>
+}
