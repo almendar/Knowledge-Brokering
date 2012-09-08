@@ -27,7 +27,7 @@ class MongoDblpSearcher extends SearchAgent(MongoDblpSearcher.NAME, MongoDblpSea
 
   import PassimDialect._
 
-  override final val capabilities = List(PassimDialect.PERSON, PassimDialect.PUBLICATION)
+  override final val capabilities = List(PassimDialect.PUBLICATION)
 
   val dblpGate = new MongoDblpGate()
   dblpGate.connect()
@@ -37,8 +37,9 @@ class MongoDblpSearcher extends SearchAgent(MongoDblpSearcher.NAME, MongoDblpSea
     val (sender, token, query, typeOfQuery) = queryMsg.getInfo
 
     val searchResults: List[MongoPublication] = typeOfQuery match {
-      case PERSON => dblpGate.searchAuthor(query)
+      //case PERSON => dblpGate.searchAuthor(query)
       case PUBLICATION => dblpGate.searchPublication(query)
+      case _=> List.empty[MongoPublication]
     }
 
    for (i <- searchResults) {
