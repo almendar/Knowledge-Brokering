@@ -2,9 +2,12 @@
 
 @main("University search results"){
         <h1>Found universities (@infos.length)</h1>
+        
+        <a href=@routes.Application.index>Back to home</a>
+        
         <ul>
             @for(i<-infos) {
-            <li>@i.name
+            <li>@i.name.mkString(", ")
                 @if(i.yearEstablished.nonEmpty) {established in @i.yearEstablished} <br>
                 @i.city, @i.country<br/>
                 <a href="@i.homepage">@i.homepage</a>

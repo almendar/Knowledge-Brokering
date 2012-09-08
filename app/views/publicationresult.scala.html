@@ -10,16 +10,28 @@
     margin-top: 0;
     }
 
+        
+    a {
+     text-color : black;
+    }
+    
+    a:hover {
+     	font-size: 16px;
+    }
+
 </style>
 
 @main("Publiction search results") {
         <h2>Publications (@infos.length)</h2>
+        <a href=@routes.Application.index>Back to home</a>
         <ul>
         @for(pub <- infos) {
-            <li><i>@pub.title</i> by @pub.author @if(pub.pubYear!=null) {from @pub.pubYear year}
-            @if(pub.citedBy!=null) {<br/> cited by: @pub.citedBy}
-            <br/>
-            </li>
+        	@if(pub.authors!=null) {
+	            <li><i>@pub.title</i> by @for(author<-pub.authors) { <a href="@routes.Application.authorSearch(author)">   @author   </a> } @if(pub.pubYear!=null) {from @pub.pubYear year}
+	            @if(pub.citedBy!=null) {<br/> cited by: @pub.citedBy}
+	            <br/>
+	            </li>
+            }
         }
 
         </ul>

@@ -9,5 +9,11 @@ GET     /                           controllers.Application.index
 GET     /search                       controllers.Application.search
 POST    /search                       controllers.Application.newSearch
 
+
+GET     /people/:person            controllers.Application.authorSearch(person: String)
+GET     /publication/:publication            controllers.Application.publicationSearch(publication: String)
+GET     /university/:university            controllers.Application.universitySearch(university: String)
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

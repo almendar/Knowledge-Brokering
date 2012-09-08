@@ -17,7 +17,7 @@ import pl.edu.pw.elka.stud.tkogut.brokering.message.InformationMessage
 
 class PublicationInfo extends InformationSnip {
   var title:String = null
-  var author:String = null
+  var authors:List[String] = null
   var pubYear : String = null
   var citedBy:String = null
 
@@ -61,7 +61,7 @@ class PublicationSearchExecutor(task: QueryTask, broker:Broker) extends SearchTa
               pubinfo.title = title
               y.getValue(PassimDialect.publicationAuthor) match {
                 case Some(author) =>
-                  pubinfo.author = author
+                  pubinfo.authors = author.split(",").toList
                 case None =>
               }
               y.getValue(PassimDialect.publicationYear) match {

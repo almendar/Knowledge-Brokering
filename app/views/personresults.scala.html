@@ -1,4 +1,4 @@
-@(infos: List[pl.edu.pw.elka.stud.tkogut.passim.executors.PersonInfo])
+@(keyWord: String, infos: List[pl.edu.pw.elka.stud.tkogut.passim.executors.PersonInfo])
 
     <style>
         p {
@@ -10,10 +10,12 @@
             margin-top: 0;
         }
 
+
     </style>
 
 @main("Person search results") {
-    <h1>People of science (@infos.length)</h1>
+    <h1>Search for "@keyWord" (Resutls number: @infos.length)</h1>
+    <a href=@routes.Application.index>Back to home</a>
     @for(p <- infos) {
         <hr />
         <h2>@p.name</h2>

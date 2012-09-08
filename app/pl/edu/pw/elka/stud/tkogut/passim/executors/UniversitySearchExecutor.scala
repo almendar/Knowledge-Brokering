@@ -6,6 +6,7 @@ import pl.edu.pw.elka.stud.tkogut.brokering.result.{SingleResult, ResultDescript
 import pl.edu.pw.elka.stud.tkogut.brokering.message.InformationMessage
 import collection.mutable
 import pl.edu.pw.elka.stud.tkogut.passim.PassimDialect
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * User:  Tomasz Kogut
@@ -17,7 +18,7 @@ import pl.edu.pw.elka.stud.tkogut.passim.PassimDialect
 
 
 class UniversityData extends InformationSnip {
-  var name: String = ""
+  var name: ArrayBuffer[String] = ArrayBuffer.empty[String]
   var country: String = ""
   var city: String = ""
   var yearEstablished: String = ""
@@ -56,13 +57,16 @@ class UniversitySearchExecutor(task: QueryTask, broker: Broker) extends SearchTa
 
             y.getValue(PassimDialect.universityName) match {
               case Some(name) =>
-                val ud = all.getOrElse(name, new UniversityData)
-                all(name) = ud
-                ud.name = name
-                ud.country = y.getValue(PassimDialect.universityCountry).getOrElse("")
-                ud.city = y.getValue(PassimDialect.universityHomeCity).getOrElse("")
-                ud.homepage = y.getValue(PassimDialect.universityHomepage).getOrElse("")
-                ud.yearEstablished = y.getValue(PassimDialect.universityFoundationYear).getOrElse("")
+                val universityHomepage : String =  y.getValue(PassimDialect.universityHomepage).getOrElse("")
+                if(universityHomepage.nonEmpty) {
+	                val ud = all.getOrElse(universityHomepage, new UniversityData)
+	                all(universityHomepage) = ud
+	                ud.name += name
+	                ud.country = y.getValue(PassimDialect.universityCountry).getOrElse("")
+	                ud.city = y.getValue(PassimDialect.universityHomeCity).getOrElse("")
+	                ud.homepage = y.getValue(PassimDialect.universityHomepage).getOrElse("")
+	                ud.yearEstablished = y.getValue(PassimDialect.universityFoundationYear).getOrElse("")
+                }
               case None => //skip those withourt  a name
             }
         }
