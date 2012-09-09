@@ -7,6 +7,7 @@ import pl.edu.pw.elka.stud.tkogut.brokering.message.InformationMessage
 import collection.mutable
 import pl.edu.pw.elka.stud.tkogut.passim.PassimDialect
 import scala.collection.mutable.ArrayBuffer
+import java.util.Calendar
 
 /**
  * User:  Tomasz Kogut
@@ -29,11 +30,11 @@ class UniversityData extends InformationSnip {
       try {
         yearEstablished.trim.toInt
       } catch {
-        case e: NumberFormatException => -Integer.MAX_VALUE
+        case e: NumberFormatException => Integer.MAX_VALUE
       }
     }
     else {
-      -Integer.MAX_VALUE
+      Integer.MAX_VALUE
     }
   }
 
@@ -65,7 +66,16 @@ class UniversitySearchExecutor(task: QueryTask, broker: Broker) extends SearchTa
 	                ud.country = y.getValue(PassimDialect.universityCountry).getOrElse("")
 	                ud.city = y.getValue(PassimDialect.universityHomeCity).getOrElse("")
 	                ud.homepage = y.getValue(PassimDialect.universityHomepage).getOrElse("")
-	                ud.yearEstablished = y.getValue(PassimDialect.universityFoundationYear).getOrElse("")
+	                ud.yearEstablished = y.getValue(PassimDialect.universityFoundationYear).getOrElse("0")
+	                try {
+	                  val year:Int = ud.yearEstablished.toInt
+	                	if(! (year < Calendar.getInstance.get(Calendar.YEAR) && year > 800)) 
+	                	 ud.yearEstablished = ""
+	                }
+	                catch {
+	                  case e:java.lang.NumberFormatException =>
+	                    ud.yearEstablished = ""
+	                }
                 }
               case None => //skip those withourt  a name
             }

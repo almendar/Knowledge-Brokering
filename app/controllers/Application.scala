@@ -16,6 +16,10 @@ import executors.{UniversityData, PublicationInfo, PersonInfo}
 import search.dbpedia.DbpediaSearcher
 
 
+
+
+
+
 object Application extends Controller {
 
   val searchForm = Form(
@@ -56,7 +60,7 @@ object Application extends Controller {
   def universitySearch(university:String) = Action {
 	  val client = new DummyUniveristyClient(System.currentTimeMillis.toString, university)
       val promise: Promise[List[UniversityData]] = Akka.future {client.getResults}
-	  Async {promise.map(i => Ok(views.html.universityresults(i.sortBy(-_.getEstablishedYear))))
+	  Async {promise.map(i => Ok(views.html.universityresults(i.sortBy(_.getEstablishedYear))))
 	  }
   }
   	

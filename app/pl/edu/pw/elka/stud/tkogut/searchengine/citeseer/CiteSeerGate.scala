@@ -48,7 +48,14 @@ class CiteSeerGate {
           CiteSeerInfoExtraction.abstractRegex.findFirstMatchIn(articleDetailsHtmlSite)
             .map(_.group(CiteSeerInfoExtraction.ABSTRACT)).getOrElse("Unknown")
         e += (CiteSeerInfoExtraction.ABSTRACT -> abstractText)
-        downloader.closeConnection()
+        
+        val links = CiteSeerInfoExtraction.dLinksRegex.findAllIn(articleDetailsHtmlSite).matchData.map(_.group(CiteSeerInfoExtraction.DLINK)).toList
+        println(links.mkString(","))
+        
+       
+        //downloader.closeConnection()
+        
+        
     }
   }
 

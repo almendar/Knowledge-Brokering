@@ -55,9 +55,12 @@ class PublicationSearchExecutor(task: QueryTask, broker:Broker) extends SearchTa
         x.r.foreach { y : SingleResult =>
           var pubinfo = new PublicationInfo
           y.getValue(PassimDialect.publicationTitle) match {
-            case Some(title) =>
-              if (all.contains(title)) pubinfo = all(title)
-              else all(title) = pubinfo
+            case Some(titleRaw) =>
+              var title = titleRaw
+              if(title.endsWith("."))
+                title = title.substring(0, title.length-1)
+              if (all.contains(title)) pubinfo = all(title.toLowerCase)
+              else all(title.toLowerCase) = pubinfo
               pubinfo.title = title
               y.getValue(PassimDialect.publicationAuthor) match {
                 case Some(author) =>

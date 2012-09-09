@@ -75,78 +75,31 @@ class PersonSearchExecutor(task: QueryTask, broker: Broker) extends SearchTaskEx
                 val names = personName.split(",")
                 names.foreach {
                   z =>
-                    var stringName: String = null
-                    var dotStringNames: String = null
-                    var trimedName: String = z.trim
-                    var splitName = trimedName.split(" ") // e.g. ["Donald", "E.", "Knuth"]
-
-                    if (splitName.length > 1) {
-                      val surname = splitName.last
-                      val names: List[String] = splitName.init.toList
-
-                      //if has a dot in name
-                      if (splitName.exists(_.contains("."))) {
-                        val namesListWithoutDots = names.filterNot(_.contains("."))
-                        //This will give us Donald Knuth
-                        if (namesListWithoutDots.nonEmpty) {
-                          stringName = (namesListWithoutDots ::: List(surname)).mkString(" ").trim
-                        }
-                      }
-                      val dotNames: List[String] = names.map {
-                        x: String =>
-                          if (x.length == 2 && x(1) == '.')
-                            x
-                          else if (x.length > 2)
-                            x(0) + "."
-                          else x
-                      }
-                      //this will give D. E. Knuth
-                      dotStringNames = (dotNames ::: List(surname)).mkString(" ")
-                    }
-                    else {
-                      stringName = trimedName
-                    }
-
-                    var personInfo: PersonInfo = null
-
-                    //1 1
-                    if (stringName != null && dotStringNames != null) {
-
-                      if (authors.contains(stringName)) {
-                        personInfo = authors(stringName)
-                        authorsDots(dotStringNames) = personInfo
-                      }
-                      else if (authorsDots.contains(dotStringNames)) {
-                        personInfo = authorsDots(dotStringNames)
-                        personInfo.name = stringName
-                        authors(stringName) = personInfo
-                      }
+                    var nameKey = ""
+                    var splitName = z.trim.split(" ").map(_.trim.toLowerCase).filter(_.nonEmpty) // e.g. ["donald", "e.", "knuth"]
+                    var isFullName = false
+                    if(splitName.length > 1) {
+                      //already good
+                      if(splitName.head.contains(".") && splitName.head.length==2) {
+                        nameKey = z
+                        if(splitName.length == 2)
+                        	isFullName = true
+                      } 
                       else {
-                        personInfo = new PersonInfo(stringName)
-                        authors(stringName) = personInfo
-                        authorsDots(dotStringNames) = personInfo
+                        //J. Knuth                        
+                        nameKey = splitName.head.head + ". " + splitName.tail.mkString(" ")
                       }
                     }
-                    //0 1
-                    else if (stringName == null && dotStringNames != null) {
-                      if (authorsDots.contains(dotStringNames)) {
-                        personInfo = authorsDots(dotStringNames)
-                      }
-                      else {
-                        personInfo = new PersonInfo(dotStringNames)
-                        authorsDots(dotStringNames) = personInfo
-                      }
+                    else {//is only one word
+                      nameKey = z
                     }
-                    // 1 0
-                    else if (stringName != null && dotStringNames == null) {
-                      if (authors.contains(stringName)) {
-                        personInfo = authors(stringName)
-                      }
-                      else {
-                        personInfo = new PersonInfo(stringName)
-                        authors(stringName) = personInfo
-                      }
-                    }
+
+                    var personInfo = authors.getOrElse(nameKey, new PersonInfo(z))
+                    authors(nameKey) = personInfo
+                    
+                    if(isFullName) 
+                      personInfo.name = z
+                    
                     //0 0 never happens
                     //                    else if(stringName==null && dotStringNames==null) {
                     //
@@ -179,8 +132,6 @@ class PersonSearchExecutor(task: QueryTask, broker: Broker) extends SearchTaskEx
                         personInfo.pictureURL = picture
                       case None =>
                     }
-
-
                     personInfo.infoSource += y.source
                 }
               case None =>
@@ -192,7 +143,7 @@ class PersonSearchExecutor(task: QueryTask, broker: Broker) extends SearchTaskEx
     val all = (authors.values.toList ::: authorsDots.values.toList).distinct.sortBy {
       x =>
 
-        val similarity = (((2.0 * (task.query.toSet & x.name.toSet).size))) /// (query.toSet.size + x.name.toSet.size)
+        val similarity = (((2.0 * (task.query.toSet & x.name.toSet).size))) / (task.query.toSet.size + x.name.toSet.size)
         -similarity //want this served more similar firt in order
     }
     val infMsg = new InformationMessage(this, task.token, all)

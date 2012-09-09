@@ -26,6 +26,8 @@ object CiteSeerInfoExtraction {
   final val AUTHORS = "authors"
   final val ABSTRACT = "abstract"
   final val PAGER = "pager"
+  final val TITLE="title"
+  final val DLINK = "dlinks"
 
   final val regexPattern = new scala.util.matching.Regex(
     """(?s)(?i)<div class=\"result\"[^>]*>(.+?)""" +
@@ -55,6 +57,12 @@ object CiteSeerInfoExtraction {
   final val pagerRegex = new scala.util.matching.Regex(
     """(?s)(?i)<div id=\"pager\">.*?<a href=\"(.*?)\">""", PAGER
   ) //<a href=\"(.*?)\>.*?</a></div>
+  
+  
+  final val dLinksRegex = new scala.util.matching.Regex(
+     """(?s)(?i)<li>.*?<a escapexml=\"true\" title=\"(.*?)\" href="(.*?)">.*?</a>.*?</li>""",TITLE,DLINK 
+  )
+  
 }
 
 class CiteSeerInfoExtraction(htmlSite: String) {
@@ -83,6 +91,7 @@ class CiteSeerInfoExtraction(htmlSite: String) {
       data += (YEAR -> pubyear)
       pager = pagerRegex.findFirstMatchIn(htmlSite).map(_.group(PAGER))
       extracts += data
+      
     }
 
   }

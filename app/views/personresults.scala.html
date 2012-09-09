@@ -32,7 +32,9 @@
         @if(p.publications.nonEmpty) {
             <p>List of publications:</p>
             @for(pub <- p.publications.toList.sortBy(_.pubYear)) {
-                <p><i>"@pub.title"</i> @if(pub.pubYear!="Unknown") {from year @pub.pubYear} by @pub.authors</p>
+            	<ul>
+                	<li><i>"@pub.title"</i> @if(pub.pubYear!="Unknown") {from year @pub.pubYear} by @pub.authors</li>
+            	</ul>
             }
         }
 

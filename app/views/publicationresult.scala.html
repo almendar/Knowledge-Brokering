@@ -1,33 +1,22 @@
 @(infos: List[pl.edu.pw.elka.stud.tkogut.passim.executors.PublicationInfo])
 
-<style>
-    p {
-    margin-top: 0;
-    margin-bottom: 0px;
-    }
-
-    h2 {
-    margin-top: 0;
-    }
-
-        
-    a {
-     text-color : black;
-    }
-    
-    a:hover {
-     	font-size: 16px;
-    }
-
-</style>
 
 @main("Publiction search results") {
+
+
+		<script type="text/css">
+			a:hover {
+				font-size: 22px; 
+			}
+		</script>
+
+
         <h2>Publications (@infos.length)</h2>
         <a href=@routes.Application.index>Back to home</a>
         <ul>
         @for(pub <- infos) {
         	@if(pub.authors!=null) {
-	            <li><i>@pub.title</i> by @for(author<-pub.authors) { <a href="@routes.Application.authorSearch(author)">   @author   </a> } @if(pub.pubYear!=null) {from @pub.pubYear year}
+	            <li><i>@pub.title</i> by @for(author<-pub.authors) { <a class="author" href="@routes.Application.authorSearch(author)">   @author   </a> } @if(pub.pubYear!=null) {from @pub.pubYear year}
 	            @if(pub.citedBy!=null) {<br/> cited by: @pub.citedBy}
 	            <br/>
 	            </li>
